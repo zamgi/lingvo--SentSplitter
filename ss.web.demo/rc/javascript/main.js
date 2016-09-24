@@ -6,20 +6,20 @@ $(document).ready(function () {
         var _len = $("#text").val().length; 
         var len = _len.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         var $textLength = $("#textLength");
-        $textLength.html("длина текста: " + len + " символов");
+        $textLength.html("length of text: " + len + " characters");
         if (MAX_INPUTTEXT_LENGTH < _len) $textLength.addClass("max-inputtext-length");
         else                             $textLength.removeClass("max-inputtext-length");
     };
     var getText = function ($text) {
         var text = trim_text($text.val().toString());
         if (is_text_empty(text)) {
-            alert("Введите текст для обработки.");
+            alert("Enter the text to be processed.");
             $text.focus();
             return (null);
         }
 
         if (text.length > MAX_INPUTTEXT_LENGTH) {
-            if (!confirm('Превышен рекомендуемый лимит ' + MAX_INPUTTEXT_LENGTH + ' символов (на ' + (text.length - MAX_INPUTTEXT_LENGTH) + ' символов).\r\nТекст будет обрезан, продолжить?')) {
+            if (!confirm('Exceeded the recommended limit ' + MAX_INPUTTEXT_LENGTH + '  characters (on the ' + (text.length - MAX_INPUTTEXT_LENGTH) + ' characters).\r\nText will be truncated, continue?')) {
                 return (null);
             }
             text = text.substr(0, MAX_INPUTTEXT_LENGTH);
@@ -49,32 +49,27 @@ $(document).ready(function () {
             },
             success: function (responce) {
                 if (responce.err) {
-                    if (responce.err == "goto-on-captcha") {
-                        window.location.href = "Captcha.aspx";
-                    } else {
-                        processing_end();
-                        $('.result-info').addClass('error').text(responce.err);
-                    }
+                    processing_end();
+                    $('.result-info').addClass('error').text(responce.err);
                 } else {
-                    if (responce.sents && responce.sents.length != 0) {
+                    if (responce.sents && responce.sents.length) {
                         var result_text = '',
                             $table = $('#processResult tbody');
                             $('.result-info').removeClass('error').text(''); 
                         for (var i = 0, len = responce.sents.length; i < len; i++) {
-                            var sent = responce.sents[ i ];
-                            result_text += '<tr><td>' + (i + 1) + '.</td><td>' + sent.t + '</td></tr>';
+                            result_text += '<tr><td>' + (i + 1) + '.</td><td>' + responce.sents[ i ].t + '</td></tr>';
                         }
                         $table.html( result_text );
                         processing_end();
                     } else {
                         processing_end();
-                        $('.result-info').text('Границы предложений в тексте не определены');
+                        $('.result-info').text('Borders of a sentence are not defined in the text');
                     }
                 }
             },
             error: function () {
                 processing_end();
-                $('.result-info').text('ошибка сервера');
+                $('.result-info').text('server error');
             }
         });
         
@@ -82,7 +77,7 @@ $(document).ready(function () {
 
     function processing_start(){
         $('#text').addClass('no-change').attr('readonly', 'readonly').attr('disabled', 'disabled');
-        $('.result-info').removeClass('error').text('Идет обработка...');
+        $('.result-info').removeClass('error').text('Processing...');
         $('#processButton').addClass('disabled');
         $('#processResult tbody').empty();
     };
