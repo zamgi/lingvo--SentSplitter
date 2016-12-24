@@ -1,7 +1,7 @@
 # lingvo--SentSplitter
 Detection borders of a sentence
 
-<a href="http://ssg.somee.com/ss">demo</a>
+<a href="http://ssg.somee.com/ss">live demo</a>
 
 <div style="padding: 20px">
                             <p>
