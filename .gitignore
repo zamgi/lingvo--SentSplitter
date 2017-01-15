@@ -47,3 +47,5 @@ Temporary Items
 .apdisk
 
 *.suo
+ss.web.demo/[resources]/sent-splitter-resources.xml
+ss.web.demo/[resources]/url-detector-resources.xml
