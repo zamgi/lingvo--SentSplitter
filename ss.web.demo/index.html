@@ -27,19 +27,24 @@
         <div style="background-color: #F00; color: #FFF; text-align: center; padding: 10px;">This site requires JavaScript enabled in your browser.</div>
     </noscript>
     <div id="wrapper">
+        <div id="header" class="clearfix">
+            <div>
+                <h1 id="headerSiteTitle"></h1>
+            </div>
+        </div>
         <div id="mainWrapper" class="clearfix">
             <div id="main" class="clearfix">
                 <div id="mainPageContent">
                     <h2 id="periodsHeader" class="h-head">
                         <span>Detection borders of a sentence</span>
-                        <a href="description.html" class="description-header">About</a>
+                        <a href="description.html" class="description-header">Description</a>
                     </h2>
 
                     <div class="line"></div>
 
                     <h2 class="content-header">
                         <span id="textLength"></span>
-                        <span>Enter the text:</span>
+                        <span>Enter the text</span>
                     </h2>
 
                     <center>
@@ -48,13 +53,13 @@
                             <textarea id="text" rows="10" style="width: 99%;"></textarea>
                             </td></tr>
                         </table>                        
-                    </center>                    
+                    </center>
+                    <h3 class="result-info"></h3>
                     <div class="page-box-button">
                         <input id="processButton" class="form-button" value="Process" type="submit" style="width: 220px">
                     </div>
-                    <h3 class="result-info" style="display: none"></h3>
 
-                    <div id="processResult">
+                    <div id="processResult" style="margin-top: 20px;">
                         <table>
                             <tbody>
                             </tbody>

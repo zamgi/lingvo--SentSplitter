@@ -61,12 +61,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\[resources]\sent-splitter-resources.xml">
-      <Link>[resources]\sent-splitter-resources.xml</Link>
-    </Content>
-    <Content Include="..\[resources]\url-detector-resources.xml">
-      <Link>[resources]\url-detector-resources.xml</Link>
-    </Content>
     <Content Include="index.html" />
     <Content Include="description.html" />
     <Content Include="rc\css\style.css" />
@@ -100,7 +94,6 @@
       <Name>SentSplitter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -136,9 +129,5 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>xcopy "..\..\[resources]\url-detector-resources.xml" "$(ProjectDir)[resources]" /Y
-xcopy "..\..\[resources]\sent-splitter-resources.xml" "$(ProjectDir)[resources]" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
