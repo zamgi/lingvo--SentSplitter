@@ -137,8 +137,10 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+<!--
   <PropertyGroup>
     <PostBuildEvent>xcopy "..\..\[resources]\url-detector-resources.xml" "$(ProjectDir)[resources]" /Y
 xcopy "..\..\[resources]\sent-splitter-resources.xml" "$(ProjectDir)[resources]" /Y</PostBuildEvent>
   </PropertyGroup>
+-->
 </Project>
