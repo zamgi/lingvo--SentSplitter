@@ -59,6 +59,8 @@ $(document).ready(function () {
                         for (var i = 0, len = responce.sents.length; i < len; i++) {
                             result_text += '<tr><td>' + (i + 1) + '.</td><td>' + responce.sents[ i ].t + '</td></tr>';
                         }
+                        $('.result-info').hide();
+                        $('#processResult').show();
                         $table.html( result_text );
                         processing_end();
                     } else {
@@ -69,7 +71,7 @@ $(document).ready(function () {
             },
             error: function () {
                 processing_end();
-                $('.result-info').text('server error');
+                $('.result-info').addClass('error').text('server error');
             }
         });
         
@@ -77,9 +79,10 @@ $(document).ready(function () {
 
     function processing_start(){
         $('#text').addClass('no-change').attr('readonly', 'readonly').attr('disabled', 'disabled');
-        $('.result-info').removeClass('error').text('Processing...');
+        $('.result-info').show().removeClass('error').text('Processing...');
         $('#processButton').addClass('disabled');
         $('#processResult tbody').empty();
+        $('#processResult').hide();
     };
     function processing_end(){
         $('#text').removeClass('no-change').removeAttr('readonly').removeAttr('disabled');

@@ -140,7 +140,7 @@ h2.h-head { font-size:18px; background:#E6E6E6 url("../images/bg-h2.gif") repeat
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
-.page-box-button { text-align:center; margin-top:10px; }
+.page-box-button { text-align:center; margin-top:10px; margin-bottom: 10px; }
 #mainPageContent {width: 100%;}
 #mainPageContent a {text-decoration: none;}
 #mainPageContent a:hover {text-decoration: underline;}

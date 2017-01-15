@@ -209,8 +209,6 @@ namespace lingvo.sentsplitting
 
         public void ProcessRequest( HttpContext context )
         {
-            context.Response.ContentType = "application/json";
-            //---context.Response.Headers.Add( "Access-Control-Allow-Origin", "*" );
             try
             {
                 var text          = context.GetRequestStringParam( "text", Config.MAX_INPUTTEXT_LENGTH );
@@ -245,6 +243,9 @@ namespace lingvo.sentsplitting
         }
         private static void SendJsonResponse( HttpContext context, result_base result )
         {
+            context.Response.ContentType = "application/json";
+            //---context.Response.Headers.Add( "Access-Control-Allow-Origin", "*" );
+
             var json = JsonConvert.SerializeObject( result );
             context.Response.Write( json );
         }
