@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace lingvo.sentsplitting
@@ -122,7 +122,7 @@ namespace lingvo.sentsplitting
             /// <summary>
             /// 
             /// </summary>
-            private class ngram_t_IEqualityComparer : IEqualityComparer< ngram_t< TValue > >
+            private sealed class ngram_t_IEqualityComparer : IEqualityComparer< ngram_t< TValue > >
             {
                 public static readonly ngram_t_IEqualityComparer Instance = new ngram_t_IEqualityComparer();
                 private ngram_t_IEqualityComparer() { }
@@ -265,9 +265,8 @@ namespace lingvo.sentsplitting
 
             public override string ToString()
             {
-                return (
-                    ((Word != null) ? ('\'' + Word + '\'') : "ROOT") +
-                    ", transitions(descendants): " + Transitions.Length + ", ngrams: " + Ngrams.Count
+                return ( ((Word != null) ? ('\'' + Word + '\'') : "ROOT") +
+                         ", transitions(descendants): " + Transitions.Length + ", ngrams: " + Ngrams.Count
                        );
             }
         }
@@ -474,7 +473,7 @@ namespace lingvo.sentsplitting
                     foreach ( var ngram in node.Ngrams )
                     {
                         var r = searchResults.Add( new SearchResult< TValue >( index - ngram.words.Length + 1, ngram.words.Length, ngram.value ) );
-                        System.Diagnostics.Debug.Assert( r );
+                        Debug.Assert( r );
                     }
                 }
             }
@@ -517,7 +516,7 @@ namespace lingvo.sentsplitting
                                 searchResults = new SortedSet< SearchResultOfHead2Left< TValue > >( SearchResultOfHead2LeftIComparer.Instance );
                             }
                             var r = searchResults.Add( new SearchResultOfHead2Left< TValue >( word, ngram.words.Length, ngram.value ) );
-                            System.Diagnostics.Debug.Assert( r );
+                            Debug.Assert( r );
                         }
                     }
                 }

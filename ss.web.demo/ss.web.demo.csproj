@@ -61,12 +61,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\[resources]\sent-splitter-resources.xml">
-      <Link>[resources]\sent-splitter-resources.xml</Link>
-    </Content>
-    <Content Include="..\[resources]\url-detector-resources.xml">
-      <Link>[resources]\url-detector-resources.xml</Link>
-    </Content>
     <Content Include="index.html" />
     <Content Include="description.html" />
     <Content Include="rc\css\style.css" />
@@ -83,6 +77,8 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="[resources]\sent-splitter-resources.xml" />
+    <Content Include="[resources]\url-detector-resources.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConcurrentFactory.cs" />

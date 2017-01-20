@@ -130,16 +130,16 @@ namespace lingvo.sentsplitting
         {
             if ( this._Items.Length < min )
             {
-                int num = (this._Items.Length == 0) ? 4 : (this._Items.Length * 2);
-                if ( num > 2146435071 )
+                int n = (this._Items.Length == 0) ? 4 : (this._Items.Length * 2);
+                if ( n > 2146435071 )
                 {
-                    num = 2146435071;
+                    n = 2146435071;
                 }
-                if ( num < min )
+                if ( n < min )
                 {
-                    num = min;
+                    n = min;
                 }
-                this.Capacity = num;
+                this.Capacity = n;
             }
         }
 
