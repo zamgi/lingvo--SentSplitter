@@ -33,7 +33,7 @@ namespace lingvo.sentsplitting
     /// <summary>
     /// Summary description for RESTProcessHandler
     /// </summary>
-    public sealed class RESTProcessHandler: IHttpHandler
+    public sealed class RESTProcessHandler : IHttpHandler
     {
         /// <summary>
         /// 
@@ -160,7 +160,7 @@ namespace lingvo.sentsplitting
                 _Context = context;
             }
 
-            private ConcurrentFactory _ConcurrentFactory
+            /*private ConcurrentFactory _ConcurrentFactory
             {
                 get { return ((ConcurrentFactory) _Context.Cache[ "_ConcurrentFactory" ]); }
                 set
@@ -170,7 +170,9 @@ namespace lingvo.sentsplitting
                     else
                         _Context.Cache.Remove( "_ConcurrentFactory" );
                 }
-            }
+            }*/
+
+            private static ConcurrentFactory _ConcurrentFactory;
 
             public ConcurrentFactory GetConcurrentFactory()
             {
@@ -209,8 +211,6 @@ namespace lingvo.sentsplitting
 
         public void ProcessRequest( HttpContext context )
         {
-            context.Response.ContentType = "application/json";
-            //---context.Response.Headers.Add( "Access-Control-Allow-Origin", "*" );
             try
             {
                 var text          = context.GetRequestStringParam( "text", Config.MAX_INPUTTEXT_LENGTH );
@@ -228,7 +228,7 @@ namespace lingvo.sentsplitting
             }
         }
 
-        private static void SendJsonResponse( HttpContext context, IList<sent_t> sents, string originalText, bool returnText )
+        private static void SendJsonResponse( HttpContext context, IList< sent_t > sents, string originalText, bool returnText )
         {
             if ( returnText )
             {
@@ -245,6 +245,9 @@ namespace lingvo.sentsplitting
         }
         private static void SendJsonResponse( HttpContext context, result_base result )
         {
+            context.Response.ContentType = "application/json";
+            //---context.Response.Headers.Add( "Access-Control-Allow-Origin", "*" );
+
             var json = JsonConvert.SerializeObject( result );
             context.Response.Write( json );
         }

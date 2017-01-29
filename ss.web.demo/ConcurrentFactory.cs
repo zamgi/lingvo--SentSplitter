@@ -2,44 +2,39 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-using lingvo.sentsplitting;
-using _SentSplitter_ = lingvo.sentsplitting.SentSplitter;
-
 namespace lingvo.sentsplitting
 {
     /// <summary>
     /// 
     /// </summary>
-	internal sealed class ConcurrentFactory : IDisposable
+	internal sealed class ConcurrentFactory //: IDisposable
 	{
-		private readonly int                      _InstanceCount;
-		private Semaphore                         _Semaphore;
-        private ConcurrentStack< _SentSplitter_ > _Stack;
-		private bool                              _IsDisposed;
+		private Semaphore                       _Semaphore;
+        private ConcurrentStack< SentSplitter > _Stack;
+		//private bool                              _IsDisposed;
 
         public ConcurrentFactory( SentSplitterConfig config, int instanceCount )
 		{
             if ( instanceCount <= 0 ) throw (new ArgumentException("instanceCount"));
             if ( config == null     ) throw (new ArgumentNullException("config"));
 
-            _InstanceCount = instanceCount;
-            _Semaphore     = new Semaphore( _InstanceCount, _InstanceCount );
-            _Stack = new ConcurrentStack< _SentSplitter_ >();
-			for ( int i = 0; i < _InstanceCount; i++ )
+            _Semaphore = new Semaphore( instanceCount, instanceCount );
+            _Stack     = new ConcurrentStack< SentSplitter >();
+			for ( int i = 0; i < instanceCount; i++ )
 			{
-                _Stack.Push( new _SentSplitter_( config ) );
-			}			
+                _Stack.Push( new SentSplitter( config ) );
+			}
 		}
 
         public sent_t[] AllocateSents( string text, bool splitBySmiles )
 		{
-            if ( _IsDisposed )
+            /*if ( _IsDisposed )
 			{
 				throw (new ObjectDisposedException( this.GetType().Name ));
-			}
+			}*/
 
 			_Semaphore.WaitOne();
-			var worker = default(_SentSplitter_);
+			var worker = default(SentSplitter);
 			try
 			{
                 worker = _Stack.Pop();
@@ -73,7 +68,7 @@ namespace lingvo.sentsplitting
             throw (new InvalidOperationException( this.GetType().Name + ": nothing to return (fusking)" ));
 		}
 
-        public bool IsDisposed
+        /*public bool IsDisposed
 		{
 			get { return _IsDisposed; }
 		}
@@ -89,12 +84,12 @@ namespace lingvo.sentsplitting
                 /*foreach ( var sentSplitter in _SentSplitters )
                 {
                     sentSplitter.Dispose();
-                }*/
+                }* /
                 _Semaphore.Release( _InstanceCount );
 				_Semaphore = null;
 				_Stack = null;				
 			}
-		}
+		}*/
 	}
 
     /// <summary>

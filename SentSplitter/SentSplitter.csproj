@@ -31,7 +31,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XLAT_CHARTYPE_MAP; XLAT_UPPER_INVARIANT_MAP; XLAT_WHITESPACE_CHARS; XLAT_INTERNAL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -42,7 +42,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE; XLAT_CHARTYPE_MAP; XLAT_UPPER_INVARIANT_MAP; XLAT_WHITESPACE_CHARS</DefineConstants>
+    <DefineConstants>TRACE;XLAT_CHARTYPE_MAP; XLAT_UPPER_INVARIANT_MAP; XLAT_WHITESPACE_CHARS; XLAT_INTERNAL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
