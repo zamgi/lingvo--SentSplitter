@@ -182,6 +182,7 @@ namespace lingvo.urls
         private char*                         _Ptr;  //current pointer into text
         #endregion
 
+        #region [.ctor().]
         public UrlDetector( UrlDetectorConfig config )
         {
             _ExtractValue = (config.UrlExtractMode == UrlExtractModeEnum.ValueAndPosition);
@@ -235,6 +236,7 @@ namespace lingvo.urls
                 _UriSchBufferPtrBase = null;
             }
         }
+        #endregion
 
         unsafe public List< url_t > AllocateUrls( string text )
         {
