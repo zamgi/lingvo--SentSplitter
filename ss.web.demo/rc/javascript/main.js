@@ -63,7 +63,7 @@
 
         $.ajax({
             type: "POST",
-            url:  "RESTProcessHandler.ashx",
+            url:  "ProcessHandler.ashx",
             data: {
                 splitBySmiles: true,
                 returnText   : true,

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Web;
-//using System.Web.SessionState;
+
+using Newtonsoft.Json;
 
 using lingvo.urls;
-using Newtonsoft.Json;
-using _SentSplitter_ = lingvo.sentsplitting.SentSplitter;
 
 namespace lingvo
 {
@@ -22,54 +20,32 @@ namespace lingvo
         
         public static readonly int    MAX_INPUTTEXT_LENGTH                 = int.Parse( ConfigurationManager.AppSettings[ "MAX_INPUTTEXT_LENGTH" ] );
         public static readonly int    CONCURRENT_FACTORY_INSTANCE_COUNT    = int.Parse( ConfigurationManager.AppSettings[ "CONCURRENT_FACTORY_INSTANCE_COUNT" ] );
-        public static readonly int    SAME_IP_INTERVAL_REQUEST_IN_SECONDS  = int.Parse( ConfigurationManager.AppSettings[ "SAME_IP_INTERVAL_REQUEST_IN_SECONDS" ] );
-        public static readonly int    SAME_IP_MAX_REQUEST_IN_INTERVAL      = int.Parse( ConfigurationManager.AppSettings[ "SAME_IP_MAX_REQUEST_IN_INTERVAL" ] );        
-        public static readonly int    SAME_IP_BANNED_INTERVAL_IN_SECONDS   = int.Parse( ConfigurationManager.AppSettings[ "SAME_IP_BANNED_INTERVAL_IN_SECONDS" ] );
     }
 }
 
 namespace lingvo.sentsplitting
 {
     /// <summary>
-    /// Summary description for RESTProcessHandler
+    /// Summary description for ProcessHandler
     /// </summary>
-    public sealed class RESTProcessHandler : IHttpHandler
+    public sealed class ProcessHandler : IHttpHandler
     {
         /// <summary>
         /// 
         /// </summary>
         public abstract class sent_info_base
         {
-            [JsonProperty(PropertyName="i")]  public int startIndex
-            {
-                get;
-                set;
-            }
-            [JsonProperty(PropertyName="l")] public int length
-            {
-                get;
-                set;
-            }
+            [JsonProperty(PropertyName="i")] public int startIndex { get; set; }
+            [JsonProperty(PropertyName="l")] public int length     { get; set; }
         }
         /// <summary>
         /// 
         /// </summary>
         private abstract class result_base
         {
-            protected result_base()
-            {
-            }
-            protected result_base( Exception ex )
-            {
-                exceptionMessage = ex.ToString();
-            }
-
-            [JsonProperty(PropertyName="err")]
-            public string exceptionMessage
-            {
-                get;
-                private set;
-            }
+            protected result_base() { }
+            protected result_base( Exception ex ) => exceptionMessage = ex.ToString();
+            [JsonProperty(PropertyName="err")] public string exceptionMessage { get; }
         }
 
         /// <summary>
@@ -80,13 +56,8 @@ namespace lingvo.sentsplitting
             /// <summary>
             /// 
             /// </summary>
-            public sealed class sent_info : sent_info_base
-            {
-            }
-
-            public result( Exception ex ) : base( ex )
-            {
-            }
+            public sealed class sent_info : sent_info_base { }
+            public result( Exception ex ) : base( ex ) { }
             public result( IList< sent_t > _sents )
             {
                 sents = (from sent in _sents
@@ -99,11 +70,7 @@ namespace lingvo.sentsplitting
                         ).ToArray();
             }
 
-            public sent_info[] sents
-            {
-                get;
-                private set;
-            }
+            public sent_info[] sents { get; }
         }
         /// <summary>
         /// 
@@ -115,17 +82,10 @@ namespace lingvo.sentsplitting
             /// </summary>
             public sealed class sent_info : sent_info_base
             {
-                [JsonProperty(PropertyName="t")]
-                public string text
-                {
-                    get;
-                    set;
-                }
+                [JsonProperty(PropertyName="t")] public string text { get; set; }
             }
 
-            public result_with_text( Exception ex ) : base( ex )
-            {
-            }
+            public result_with_text( Exception ex ) : base( ex ) { }
             public result_with_text( IList< sent_t > _sents, string originalText )
             {
                 sents = (from sent in _sents
@@ -139,11 +99,7 @@ namespace lingvo.sentsplitting
                         ).ToArray();
             }
 
-            public sent_info[] sents
-            {
-                get;
-                private set;
-            }
+            public sent_info[] sents { get; }
         }
 
 
@@ -153,28 +109,8 @@ namespace lingvo.sentsplitting
         private sealed class http_context_data
         {
             private static readonly object _Lock = new object();
-            private readonly HttpContext _Context;
-
-            public http_context_data( HttpContext context )
-            {
-                _Context = context;
-            }
-
-            /*private ConcurrentFactory _ConcurrentFactory
-            {
-                get { return ((ConcurrentFactory) _Context.Cache[ "_ConcurrentFactory" ]); }
-                set
-                {                    
-                    if ( value != null )
-                        _Context.Cache[ "_ConcurrentFactory" ] = value;
-                    else
-                        _Context.Cache.Remove( "_ConcurrentFactory" );
-                }
-            }*/
-
             private static ConcurrentFactory _ConcurrentFactory;
-
-            public ConcurrentFactory GetConcurrentFactory()
+            public static ConcurrentFactory GetConcurrentFactory()
             {
                 var cf = _ConcurrentFactory;
                 if ( cf == null )
@@ -199,16 +135,9 @@ namespace lingvo.sentsplitting
             }
         }
 
-        static RESTProcessHandler()
-        {
-            Environment.CurrentDirectory = HttpContext.Current.Server.MapPath( "~/" );
-        }
+        static ProcessHandler() => Environment.CurrentDirectory = HttpContext.Current.Server.MapPath( "~/" );
 
-        public bool IsReusable
-        {
-            get { return (true); }
-        }
-
+        public bool IsReusable => true;
         public void ProcessRequest( HttpContext context )
         {
             try
@@ -217,8 +146,7 @@ namespace lingvo.sentsplitting
                 var splitBySmiles = context.Request[ "splitBySmiles" ].Try2Boolean( true );
                 var returnText    = context.Request[ "returnText"    ].Try2Boolean( true );
 
-                var hcd = new http_context_data( context );
-                var sents = hcd.GetConcurrentFactory().AllocateSents( text, splitBySmiles );
+                var sents = http_context_data.GetConcurrentFactory().AllocateSents( text, splitBySmiles );
 
                 SendJsonResponse( context, sents, text, returnText );
             }
@@ -239,10 +167,7 @@ namespace lingvo.sentsplitting
                 SendJsonResponse( context, new result( sents ) );
             }
         }
-        private static void SendJsonResponse( HttpContext context, Exception ex )
-        {
-            SendJsonResponse( context, new result( ex ) );
-        }
+        private static void SendJsonResponse( HttpContext context, Exception ex ) => SendJsonResponse( context, new result( ex ) );
         private static void SendJsonResponse( HttpContext context, result_base result )
         {
             context.Response.ContentType = "application/json";
