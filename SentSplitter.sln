@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SentSplitter", "SentSplitter\SentSplitter.csproj", "{945A3CAA-EF28-4344-8DBB-7EBEB4BE0301}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sent-splitting", "sent-splitting\sent-splitting.csproj", "{945A3CAA-EF28-4344-8DBB-7EBEB4BE0301}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ss.web.demo", "ss.web.demo\ss.web.demo.csproj", "{497B7E0F-D5DE-40A2-9C73-40A00A2EF941}"
 EndProject

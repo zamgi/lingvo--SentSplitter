@@ -15,18 +15,18 @@ namespace lingvo
     /// </summary>
     internal static class Config
     {
-        public static readonly string URL_DETECTOR_RESOURCES_XML_FILENAME  = ConfigurationManager.AppSettings[ "URL_DETECTOR_RESOURCES_XML_FILENAME"  ];
-        public static readonly string SENT_SPLITTER_RESOURCES_XML_FILENAME = ConfigurationManager.AppSettings[ "SENT_SPLITTER_RESOURCES_XML_FILENAME" ];
+        public static string URL_DETECTOR_RESOURCES_XML_FILENAME  => ConfigurationManager.AppSettings[ "URL_DETECTOR_RESOURCES_XML_FILENAME"  ];
+        public static string SENT_SPLITTER_RESOURCES_XML_FILENAME => ConfigurationManager.AppSettings[ "SENT_SPLITTER_RESOURCES_XML_FILENAME" ];
         
-        public static readonly int    MAX_INPUTTEXT_LENGTH                 = int.Parse( ConfigurationManager.AppSettings[ "MAX_INPUTTEXT_LENGTH" ] );
-        public static readonly int    CONCURRENT_FACTORY_INSTANCE_COUNT    = int.Parse( ConfigurationManager.AppSettings[ "CONCURRENT_FACTORY_INSTANCE_COUNT" ] );
+        public static int    MAX_INPUTTEXT_LENGTH                 => int.Parse( ConfigurationManager.AppSettings[ "MAX_INPUTTEXT_LENGTH" ] );
+        public static int    CONCURRENT_FACTORY_INSTANCE_COUNT    => int.Parse( ConfigurationManager.AppSettings[ "CONCURRENT_FACTORY_INSTANCE_COUNT" ] );
     }
 }
 
 namespace lingvo.sentsplitting
 {
     /// <summary>
-    /// Summary description for ProcessHandler
+    ///
     /// </summary>
     public sealed class ProcessHandler : IHttpHandler
     {
@@ -106,7 +106,7 @@ namespace lingvo.sentsplitting
         /// <summary>
         /// 
         /// </summary>
-        private sealed class http_context_data
+        private static class ConcurrentFactoryHolder
         {
             private static readonly object _Lock = new object();
             private static ConcurrentFactory _ConcurrentFactory;
@@ -120,9 +120,9 @@ namespace lingvo.sentsplitting
                         cf = _ConcurrentFactory;
                         if ( cf == null )
                         {
-                            var config = new SentSplitterConfig()
+                            var ssm = new SentSplitterModel( Config.SENT_SPLITTER_RESOURCES_XML_FILENAME );
+                            var config = new SentSplitterConfig( ssm )
                             {
-                                Model             = new SentSplitterModel( Config.SENT_SPLITTER_RESOURCES_XML_FILENAME ),
                                 UrlDetectorConfig = new UrlDetectorConfig( Config.URL_DETECTOR_RESOURCES_XML_FILENAME ),
                                 SplitBySmiles     = true,
                             };
@@ -146,7 +146,7 @@ namespace lingvo.sentsplitting
                 var splitBySmiles = context.Request[ "splitBySmiles" ].Try2Boolean( true );
                 var returnText    = context.Request[ "returnText"    ].Try2Boolean( true );
 
-                var sents = http_context_data.GetConcurrentFactory().AllocateSents( text, splitBySmiles );
+                var sents = ConcurrentFactoryHolder.GetConcurrentFactory().AllocateSents( text, splitBySmiles );
 
                 SendJsonResponse( context, sents, text, returnText );
             }
