@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ss.web.demo")]
+[assembly: AssemblyTitle("ss.webService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("zamgi")]
-[assembly: AssemblyProduct("ss.web.demo")]
-[assembly: AssemblyCopyright("Copyright © zamgi 2013")]
+[assembly: AssemblyProduct("ss.webService")]
+[assembly: AssemblyCopyright("Copyright © zamgi 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,14 +21,5 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f7e900ae-9361-45be-96b3-d9e4606ca793")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Revision and Build Numbers 
-// by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

@@ -8,7 +8,7 @@ namespace lingvo.sentsplitting
     /// <summary>
     /// 
     /// </summary>
-    internal static class Ext
+    internal static class Extensions
     {
         public static HashSet< string > ToHashset( this IEnumerable< string > seq, bool toUpperInvariant ) 
             => new HashSet< string >( seq.Select( d => d.TrimEx( toUpperInvariant ) ).Where( d => !string.IsNullOrEmpty( d ) ) );
@@ -58,21 +58,45 @@ namespace lingvo.sentsplitting
         private static string ToUpperInvariantEx( this string value, bool toUpperInvarian ) => (toUpperInvarian ? value.ToUpperInvariant() : value);
 
         public static IEnumerable< T > SelectMany< T >( this IEnumerable< IEnumerable< T > > t ) => t.SelectMany( _ => _ );
+    }
 
+    internal struct before_proper_loader_t
+    {
         private const char DOT = '.';
-        private static readonly char[] SPLIT_BY_DOT    = new[] { DOT };
-        private static readonly char[] SPLIT_BY_SPACES = new[] { ' ', '\t', '\r', '\n' };
-        public static ngram_t< before_no_proper_t        > ToBeforeNoProper_ngrams( this XElement xe )
+        private char[] SPLIT_BY_DOT;
+        private char[] SPLIT_BY_SPACES;
+        public static before_proper_loader_t Create() => new before_proper_loader_t()
         {
-            var words = xe.GetWordsArray();
+            SPLIT_BY_DOT    = new[] { DOT },
+            SPLIT_BY_SPACES = new[] { ' ', '\t', '\r', '\n' }
+        };
+
+        public IEnumerable< ngram_t< before_no_proper_t > > ToBeforeNoProper_ngrams( IEnumerable< XElement > xelements )
+        {
+            foreach ( var xe in xelements )
+            {
+                yield return (ToBeforeNoProper_ngrams( xe ));
+            }
+        }
+        public ngram_t< before_no_proper_t > ToBeforeNoProper_ngrams( XElement xe )
+        {
+            var words = GetWordsArray( xe );
             var unstick_from_digits = xe.AttrValueIsTrue( "unstick-from-digits" );
 
             var ngram = new ngram_t< before_no_proper_t >( words, new before_no_proper_t( unstick_from_digits ) );
             return (ngram);
         }
-        public static ngram_t< before_proper_or_number_t > ToBeforeProperOrNumber_ngrams( this XElement xe )
+
+        public IEnumerable< ngram_t< before_proper_or_number_t > > ToBeforeProperOrNumber_ngrams( IEnumerable< XElement > xelements )
         {
-            var words = xe.GetWordsArray();
+            foreach ( var xe in xelements )
+            {
+                yield return (ToBeforeProperOrNumber_ngrams( xe ));
+            }
+        }
+        public ngram_t< before_proper_or_number_t > ToBeforeProperOrNumber_ngrams( XElement xe )
+        {
+            var words = GetWordsArray( xe );
             var digits_before       = xe.AttrValueIsTrue( "digits-before" );
             var slash_before        = xe.AttrValueIsTrue( "slash-before" );
             var unstick_from_digits = xe.AttrValueIsTrue( "unstick-from-digits" );
@@ -81,7 +105,7 @@ namespace lingvo.sentsplitting
             return (ngram);
         }
 
-        private static string[] GetWordsArray( this XElement xe )
+        private string[] GetWordsArray( XElement xe )
         {
             var words = xe.Value.Split( SPLIT_BY_DOT, StringSplitOptions.RemoveEmptyEntries );
             var word_list = new List< string >( words.Length );

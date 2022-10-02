@@ -1,68 +1,102 @@
 ﻿using System;
 
+using M = System.Runtime.CompilerServices.MethodImplAttribute;
+using O = System.Runtime.CompilerServices.MethodImplOptions;
+
 namespace lingvo.core
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class StringsHelper
+    unsafe public static class StringsHelper
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        unsafe public static string ToUpperInvariant( string value )
+        private static readonly char* _UPPER_INVARIANT_MAP;
+        static StringsHelper() => _UPPER_INVARIANT_MAP = xlat_Unsafe.Inst._UPPER_INVARIANT_MAP;
+
+        [M(O.AggressiveInlining)] public static string ToUpperInvariant( string value )
         {
             var len = value.Length;
             if ( 0 < len )
             {
-                var valueUpper = string.Copy( value );
-                fixed ( char* valueUpper_ptr = valueUpper )
+                string valueUpper;
+
+                const int THRESHOLD = 1024;
+                if ( len <= THRESHOLD )
                 {
-                    for ( int i = 0; i < len; i++ )
+                    var chars = stackalloc char[ len ];
+                    fixed ( char* value_ptr = value )
                     {
-                        var ptr = valueUpper_ptr + i;
-                        *ptr = *(xlat_Unsafe.Inst._UPPER_INVARIANT_MAP + *ptr);
+                        for ( var i = 0; i < len; i++ )
+                        {
+                            chars[ i ] = _UPPER_INVARIANT_MAP[ value_ptr[ i ] ];
+                        }
                     }
+                    valueUpper = new string( chars, 0, len );
                 }
+                else
+                {
+                    valueUpper = new string( '\0', len ); // string.Copy( value ); // => [Obsolete( "This API should not be used to create mutable strings. See https://go.microsoft.com/fwlink/?linkid=2084035 for alternatives." )]
+                    fixed ( char* value_ptr = value )
+                    fixed ( char* valueUpper_ptr = valueUpper )
+                    {
+                        for ( var i = 0; i < len; i++ )
+                        {
+                            valueUpper_ptr[ i ] = _UPPER_INVARIANT_MAP[ value_ptr[ i ] ];
+                        }
+                    }                    
+                }
+
                 return (valueUpper);
             }
             return (string.Empty);
         }
-        unsafe public static void   ToUpperInvariant( char* wordFrom, char* bufferTo )
+        //unsafe public static string ToUpperInvariant( string value )
+        //{
+        //    var len = value.Length;
+        //    if ( 0 < len )
+        //    {
+        //        var valueUpper = string.Copy( value );
+        //        fixed ( char* valueUpper_ptr = valueUpper )
+        //        {
+        //            for ( int i = 0; i < len; i++ )
+        //            {
+        //                var ptr = valueUpper_ptr + i;
+        //                *ptr = *(_UPPER_INVARIANT_MAP + *ptr);
+        //            }
+        //        }
+        //        return (valueUpper);
+        //    }
+        //    return (string.Empty);
+        //}
+        [M(O.AggressiveInlining)] unsafe public static void   ToUpperInvariant( char* wordFrom, char* bufferTo )
         {
             for ( ; ; wordFrom++, bufferTo++ )
             {
                 var ch = *wordFrom;
-                *bufferTo = *(xlat_Unsafe.Inst._UPPER_INVARIANT_MAP + ch);
+                *bufferTo = *(_UPPER_INVARIANT_MAP + ch);
                 if ( ch == '\0' )
                     return;
             }            
         }
-        unsafe public static void   ToUpperInvariantInPlace( string value )
+        [M(O.AggressiveInlining)] unsafe public static void   ToUpperInvariantInPlace( string value )
         {
             fixed ( char* value_ptr = value )
             {
                 ToUpperInvariantInPlace( value_ptr );
             }
         }
-        unsafe public static void   ToUpperInvariantInPlace( char* word )
+        [M(O.AggressiveInlining)] unsafe public static void   ToUpperInvariantInPlace( char* word )
         {
             for ( ; ; word++ )
             {
                 var ch = *word;
                 if ( ch == '\0' )
                     return;
-                *word = *(xlat_Unsafe.Inst._UPPER_INVARIANT_MAP + ch);
+                *word = *(_UPPER_INVARIANT_MAP + ch);
             }
         }
 
-        public static string ToLowerInvariant( string value )
-        {
-            return (value.ToLowerInvariant());
-        }
-
-        /// проверка эквивалентности строк
-        unsafe public static bool IsEqual( string first, string second )
+        [M(O.AggressiveInlining)] unsafe public static bool IsEqual( string first, string second )
         {
             int length = first.Length;
             if ( length != second.Length )
@@ -87,7 +121,7 @@ namespace lingvo.core
             }
             return (true);
         }
-        unsafe public static bool IsEqual( string first, char* second_ptr, int secondLength )
+        [M(O.AggressiveInlining)] unsafe public static bool IsEqual( string first, char* second_ptr, int secondLength )
         {
             /*
             if ( first.Length != secondLength )
@@ -113,7 +147,7 @@ namespace lingvo.core
             return (true);
         }
 
-        unsafe public static bool IsEqual( string first, int firstIndex, string second )
+        [M(O.AggressiveInlining)] unsafe public static bool IsEqual( string first, int firstIndex, string second )
         {
             int length = first.Length - firstIndex;
             if ( length != second.Length )
@@ -139,7 +173,7 @@ namespace lingvo.core
             }
             return (true);
         }
-        unsafe public static bool IsEqual( string first, int firstIndex, char* second_ptr, int secondLength )
+        [M(O.AggressiveInlining)] unsafe public static bool IsEqual( string first, int firstIndex, char* second_ptr, int secondLength )
         {
             int length = first.Length - firstIndex;
             if ( length != secondLength )
@@ -165,7 +199,7 @@ namespace lingvo.core
             return (true);
         }
 
-        unsafe public static int GetLength( char* _base )
+        [M(O.AggressiveInlining)] unsafe public static int GetLength( char* _base )
         {
             for ( var ptr = _base; ; ptr++ )
             {
@@ -175,12 +209,9 @@ namespace lingvo.core
                 }
             }
         }
-        unsafe public static int GetLength( IntPtr _base )
-        {
-            return (GetLength( (char*) _base ));
-        }
+        [M(O.AggressiveInlining)] unsafe public static int GetLength( IntPtr _base ) => GetLength( (char*) _base );
 
-        unsafe public static string CreateWordForm( string _base, char* morphoFormEnding )
+        [M(O.AggressiveInlining)] unsafe public static string CreateWordForm( string _base, char* morphoFormEnding )
         {
             var endingLength = GetLength( morphoFormEnding );
             if ( endingLength == 0 )
@@ -210,7 +241,7 @@ namespace lingvo.core
             }
             return (wordForm);
         }
-        unsafe public static string CreateWordForm( char*  _base, char* morphoFormEnding )
+        [M(O.AggressiveInlining)] unsafe public static string CreateWordForm( char*  _base, char* morphoFormEnding )
         {            
             var endingLength = GetLength( morphoFormEnding );
             if ( endingLength == 0 )
@@ -243,7 +274,7 @@ namespace lingvo.core
             return (wordForm);
         }
 
-        unsafe public static string ToString( char* value )
+        [M(O.AggressiveInlining)] unsafe public static string ToString( char* value )
         {
             if ( value == null )
             {
@@ -269,9 +300,6 @@ namespace lingvo.core
             }
             return (str);
         }
-        unsafe public static string ToString( IntPtr value )
-        {
-            return (ToString( (char*) value ));
-        }
+        [M(O.AggressiveInlining)] unsafe public static string ToString( IntPtr value ) => ToString( (char*) value );
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System.Text;
 
+using M = System.Runtime.CompilerServices.MethodImplAttribute;
+using O = System.Runtime.CompilerServices.MethodImplOptions;
+
 namespace lingvo.sentsplitting
 {
     /// <summary>
@@ -21,9 +24,9 @@ namespace lingvo.sentsplitting
         public ss_word_t prev;
         public ss_word_t next;
 
-        public char* endPtr() => (startPtr + length);
-        public bool  hasPrev => (prev != null); 
-        public bool  hasNext => (next != null); 
+        [M(O.AggressiveInlining)] public char* endPtr() => (startPtr + length);
+        public bool  hasPrev { [M(O.AggressiveInlining)] get => (prev != null); }
+        public bool  hasNext { [M(O.AggressiveInlining)] get => (next != null); }
 
         public override string ToString() => ('\'' + valueOriginal + "' [0x" + ((long) startPtr).ToString( "x" ) + ":" + length + "]");
         public string GetAllWordsChain()
