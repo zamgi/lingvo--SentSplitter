@@ -26,7 +26,7 @@ namespace ss.webService
     {
         public const string INDEX_PAGE_PATH = "/index.html";
 
-        public void ConfigureServices( IServiceCollection services )
+        public static void ConfigureServices( IServiceCollection services )
         {
             services.AddControllers().AddJsonOptions( options =>
             {
@@ -45,8 +45,7 @@ namespace ss.webService
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure( IApplicationBuilder app, IWebHostEnvironment env )
+        public static void Configure( IApplicationBuilder app, IWebHostEnvironment env )
         {
             if ( env.IsDevelopment() )
             {
@@ -76,8 +75,8 @@ namespace ss.webService
                     ctx.Response.Redirect( INDEX_PAGE_PATH );
                 }
             });
-            //-------------------------------------------------------------//
 #if DEBUG
+            //-------------------------------------------------------------//
             OpenBrowserIfRunAsConsole( app );
 #endif
         }

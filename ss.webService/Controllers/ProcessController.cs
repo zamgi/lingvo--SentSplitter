@@ -31,19 +31,19 @@ namespace ss.webService.Controllers
             try
             {
 #if DEBUG
-                _Logger.LogInformation( $"start Find '{m.Text}'..." );
+                _Logger.LogInformation( $"start process: '{m.Text}'..." );
 #endif
                 var p = await _ConcurrentFactory.Run( m.Text );
                 var result = new ResultVM( m, p );
 #if DEBUG
-                _Logger.LogInformation( $"end Find '{m.Text}'." );
+                _Logger.LogInformation( $"end process: '{m.Text}'." );
 #endif
                 return Ok( result );
             }
             catch ( Exception ex )
             {
 #if DEBUG
-                _Logger.LogError( $"Error while find: '{m.Text}' => {ex}" );
+                _Logger.LogError( $"Error while process: '{m.Text}' => {ex}" );
 #endif
                 return Ok( new ResultVM( m, ex ) );
             }
