@@ -67,9 +67,9 @@ namespace lingvo.sentsplitting
             var s = v.ToString();
             if ( string.IsNullOrEmpty( s ) )
             {
-                return ("[" + StartIndex + ":" + Length + "]");
+                return ($"[{StartIndex}:{Length}]");
             }
-            return ("[" + StartIndex + ":" + Length + "], value: '" + s + "'");
+            return ($"[{StartIndex}:{Length}], value: '{s}'");
         }
     }
 
@@ -104,9 +104,9 @@ namespace lingvo.sentsplitting
             var s = v.ToString();
             if ( string.IsNullOrEmpty( s ) )
             {
-                return ("[0:" + Length + "]");
+                return ($"[0:{Length}]");
             }
-            return ("[0:" + Length + "], value: '" + s + "'");
+            return ($"[0:{Length}], value: '{s}'");
         }
     }
 

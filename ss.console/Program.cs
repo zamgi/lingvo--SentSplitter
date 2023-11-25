@@ -44,13 +44,13 @@ namespace lingvo.sentsplitting
         /// <summary>
         /// 
         /// </summary>
-        private sealed class environment : IDisposable
+        private sealed class Env : IDisposable
         {
             private SentSplitterModel _Model;
             public void Dispose() => _Model.Dispose();
 
             public SentSplitter SentSplitter { get; init; }
-            public static environment Create()
+            public static Env Create()
             {
                 var model  = new SentSplitterModel( Config.SENT_SPLITTER_RESOURCES_XML_FILENAME );
                 var config = new SentSplitterConfig( model )
@@ -60,13 +60,13 @@ namespace lingvo.sentsplitting
                 };
                 var sentSplitter = new SentSplitter( config );
 
-                return (new environment() { _Model = model, SentSplitter = sentSplitter });
+                return (new Env() { _Model = model, SentSplitter = sentSplitter });
             }
         }
 
         private static void Run_1()
         {
-            using var env = environment.Create();
+            using var env = Env.Create();
 
             var text = "Напомню, что, как правило, поисковые системы работают с так называемым обратным индексом, отличной метафорой которого будет алфавитный указатель в конце книги: все использованные термины приведены в нормальной форме и упорядочены лексикографически — проще говоря, по алфавиту, и после каждого указан номер страницы, на которой этот термин встречается. Разница только в том, что такая координатная информация в поисковиках, как правило, значительно подробнее. Например, корпоративный поиск МойОфис (рабочее название — baalbek), для каждого появления слова в документе хранит, кроме порядкового номера, ещё и его грамматическую форму и привязку к разметке.";
             var sents = env.SentSplitter.AllocateSents( text );
@@ -78,7 +78,7 @@ namespace lingvo.sentsplitting
         }
         private static void Run_2( string path )
         {
-            using var env = environment.Create();
+            using var env = Env.Create();
 
             var n = 0;
             var array_1 = new string[ 1 ];
@@ -110,13 +110,12 @@ namespace lingvo.sentsplitting
         {
             try
             {
-                var seq = Directory.EnumerateDirectories( path ).SafeWalk()
-                                   .SelectMany( _path => EnumerateAllFiles( _path ) );
+                var seq = Directory.EnumerateDirectories( path ).SafeWalk().SelectMany( path => EnumerateAllFiles( path ) );
                 return (seq.Concat( Directory.EnumerateFiles( path, searchPattern )/*.SafeWalk()*/ ));
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine( ex.GetType().Name + ": '" + ex.Message + '\'' );
+                Debug.WriteLine( $"{ex.GetType().Name}: '{ex.Message}'" );
                 return (Enumerable.Empty< string >());
             }
         }
@@ -149,7 +148,7 @@ namespace lingvo.sentsplitting
         {
             using ( var enumerator = source.GetEnumerator() )
             {
-                for ( ; ; )
+                for (; ; )
                 {
                     try
                     {
@@ -158,7 +157,7 @@ namespace lingvo.sentsplitting
                     }
                     catch ( Exception ex )
                     {
-                        Debug.WriteLine( ex.GetType().Name + ": '" + ex.Message + '\'' );
+                        Debug.WriteLine( $"{ex.GetType().Name}: '{ex.Message}'" );
                         continue;
                     }
 
